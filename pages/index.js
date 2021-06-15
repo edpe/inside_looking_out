@@ -44,8 +44,6 @@ const main = async () => {
   const result = await getData(apiParams);
 
   const ourData = result.data;
-
-  console.log(ourData);
 };
 
 main().catch((err) => {
@@ -54,9 +52,9 @@ main().catch((err) => {
 });
 
 export default function Home(ourData) {
-  console.log(ourData);
   const sketch = (p5, ourData) => {
     let img;
+    let ourImportedData = ourData;
 
     p5.preload = () => {
       img = p5.loadImage("/Boris.jpg");
@@ -65,21 +63,17 @@ export default function Home(ourData) {
     p5.setup = () => {
       p5.createCanvas(p5.windowWidth, p5.windowHeight);
       p5.background(220, 100);
+      img.resize(750, 1000);
       p5.image(img, 0, 0);
-      // for (let i = 0; i < ourData.length; i++) {
-      //   p5.ellipse(
-      //     p5.random(0, p5.windowWidth),
-      //     p5.random(0, p5.windowHeight),
-      //     ourData[i].dailyDeaths,
-      //     ourData[i].dailyDeaths
-      //   );
-      // }
     };
 
-    p5.draw = () => {
-      // p5.noStroke();
-      // p5.fill(200, 0, 0);
-      // p5.ellipse(p5.windowWidth / 2, p5.windowHeight / 2, 350, 350);
+    p5.draw = (ourImportedData) => {
+      let i = 0;
+      for (let j = 0; j < ourImportedData[i].dailyCases; j++) {
+        let xPos = p5.random(p5.windowWidth, 0);
+        p5.line(xPos, 0, xPos, p5.windowHeight);
+      }
+      i++;
     };
   };
 
