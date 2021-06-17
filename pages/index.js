@@ -51,6 +51,7 @@ export const Home = () => {
 
   const sketch = (p5) => {
     let img;
+    let i = 502;
 
     p5.preload = () => {
       img = p5.loadImage("/Boris.jpg");
@@ -61,16 +62,17 @@ export const Home = () => {
       p5.createCanvas(p5.windowWidth, p5.windowHeight);
       p5.background(220, 100);
       img.resize(750, 1000);
-      p5.image(img, 0, 0);
     };
 
     p5.draw = () => {
-      let i = 0;
-      for (let j = 0; j < coronaStats.data[i].dailyCases; j++) {
-        let xPos = p5.random(p5.windowWidth, 0);
-        p5.line(xPos, 0, xPos, p5.windowHeight);
+      p5.image(img, 0, 0);
+      if (i < coronaStats.data.length && i > 0) {
+        for (let j = 0; j < coronaStats.data[i].dailyCases / 50; j++) {
+          let xPos = p5.random(p5.windowWidth, 0);
+          p5.line(xPos, 0, xPos, p5.windowHeight);
+        }
+        i--;
       }
-      i++;
     };
   };
 
