@@ -29,7 +29,7 @@ const apiParams = {
   structure: JSON.stringify(structure),
 };
 
-export default () => {
+export const Home = () => {
   const [coronaStats, setCoronaStats] = useState(null);
 
   const getData = async (queries) => {
@@ -43,11 +43,11 @@ export default () => {
     if (status >= 400) throw new Error(statusText);
 
     return setCoronaStats(data);
-  }; // getData
+  };
 
   useEffect(() => {
     getData(apiParams);
-  }, []);
+  }, [apiParams]);
 
   const sketch = (p5) => {
     let img;
@@ -80,3 +80,5 @@ export default () => {
 
   return <P5comp sketch={sketch} />;
 };
+
+export default Home;
