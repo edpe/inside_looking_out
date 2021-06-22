@@ -51,7 +51,7 @@ export const Home = () => {
 
   const sketch = (p5) => {
     let img;
-    let i = 502;
+    let count = coronaStats.data.length - 1;
 
     p5.preload = () => {
       img = p5.loadImage("/window.jpg");
@@ -62,7 +62,7 @@ export const Home = () => {
       p5.background(220, 100);
       img.resize(750, 1000);
       img.loadPixels();
-      // p5.frameRate(25);
+      p5.frameRate(25);
     };
 
     p5.draw = () => {
@@ -70,22 +70,29 @@ export const Home = () => {
       p5.image(img, 0, 0);
 
       // show lines over image for cases
-      if (i < coronaStats.data.length && i > 0) {
-        for (let j = 0; j < coronaStats.data[i].dailyCases / 20; j++) {
+      if (count > 0) {
+        for (let i = 0; i < coronaStats.data[count].dailyCases / 25; i++) {
           let xPos = p5.random(img.width, 0);
           p5.line(xPos, 0, xPos, p5.windowHeight);
         }
+        console.log(coronaStats.data[count].dailyCases);
+
         // turns a random pixel white per death
-        for (let j = 0; j < coronaStats.data[i].cumulativeDeaths; j++) {
+        for (
+          let i = 0;
+          i < coronaStats.data[count].cumulativeDeaths / 50;
+          i++
+        ) {
           let randomPixel = Math.floor(p5.random(0, img.pixels.length));
+          //todo refactor
           img.pixels[randomPixel] = 255;
           img.pixels[randomPixel + 1] = 255;
           img.pixels[randomPixel + 2] = 255;
           img.pixels[randomPixel + 3] = 255;
-          console.log(coronaStats.data[i].date);
         }
-        i--;
       }
+
+      count--;
       img.updatePixels();
     };
   };
@@ -99,7 +106,6 @@ export const Home = () => {
 
 export default Home;
 
-// Fix wierd looping
 // Only make the circle of the outside world change colour with number of deaths
 // Add text that shows the date and cum cases and cum deaths
 // Connect to vercel
