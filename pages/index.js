@@ -58,7 +58,7 @@ export const Home = () => {
     };
 
     p5.setup = () => {
-      p5.createCanvas(img.width, p5.windowHeight);
+      p5.createCanvas(img.width, img.height);
       p5.background(220, 100);
       img.resize(750, 1000);
       img.loadPixels();
@@ -74,7 +74,7 @@ export const Home = () => {
 
         for (let i = 0; i < coronaStats.data[count].dailyCases / 25; i++) {
           let xPos = p5.random(img.width, 0);
-          p5.line(xPos, 0, xPos, p5.windowHeight);
+          p5.line(xPos, 0, xPos, img.height);
         }
         console.log(coronaStats.data[count].dailyCases);
 
@@ -112,6 +112,7 @@ export default Home;
 // Add text that shows the date and cum cases and cum deaths
 // Favicon
 // landing page with some blurb
+// style page: desktop - image in the centre, mobile - image only
 
 // future:
 // save an image from a particular date or save final image
