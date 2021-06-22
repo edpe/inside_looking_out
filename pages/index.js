@@ -107,6 +107,12 @@ export const Home = () => {
 
 export default Home;
 
+// todo:
 // Only make the circle of the outside world change colour with number of deaths
 // Add text that shows the date and cum cases and cum deaths
-// Connect to vercel
+// Favicon
+// landing page with some blurb
+
+// future:
+// save an image from a particular date or save final image
+// add sound with tone.js
