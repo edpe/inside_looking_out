@@ -67,10 +67,11 @@ export const Home = () => {
 
     p5.draw = () => {
       // show image
-      p5.image(img, 0, 0);
 
       // show lines over image for cases
       if (count > 0) {
+        p5.image(img, 0, 0);
+
         for (let i = 0; i < coronaStats.data[count].dailyCases / 25; i++) {
           let xPos = p5.random(img.width, 0);
           p5.line(xPos, 0, xPos, p5.windowHeight);
