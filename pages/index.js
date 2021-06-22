@@ -54,25 +54,39 @@ export const Home = () => {
     let i = 502;
 
     p5.preload = () => {
-      img = p5.loadImage("/Boris.jpg");
+      img = p5.loadImage("/window.jpg");
     };
 
     p5.setup = () => {
-      console.log({ coronaStats });
-      p5.createCanvas(p5.windowWidth, p5.windowHeight);
+      p5.createCanvas(img.width, p5.windowHeight);
       p5.background(220, 100);
       img.resize(750, 1000);
+      img.loadPixels();
+      // p5.frameRate(25);
     };
 
     p5.draw = () => {
+      // show image
       p5.image(img, 0, 0);
+
+      // show lines over image for cases
       if (i < coronaStats.data.length && i > 0) {
-        for (let j = 0; j < coronaStats.data[i].dailyCases / 50; j++) {
-          let xPos = p5.random(p5.windowWidth, 0);
+        for (let j = 0; j < coronaStats.data[i].dailyCases / 20; j++) {
+          let xPos = p5.random(img.width, 0);
           p5.line(xPos, 0, xPos, p5.windowHeight);
+        }
+        // turns a random pixel white per death
+        for (let j = 0; j < coronaStats.data[i].cumulativeDeaths; j++) {
+          let randomPixel = Math.floor(p5.random(0, img.pixels.length));
+          img.pixels[randomPixel] = 255;
+          img.pixels[randomPixel + 1] = 255;
+          img.pixels[randomPixel + 2] = 255;
+          img.pixels[randomPixel + 3] = 255;
+          console.log(coronaStats.data[i].date);
         }
         i--;
       }
+      img.updatePixels();
     };
   };
 
@@ -84,3 +98,8 @@ export const Home = () => {
 };
 
 export default Home;
+
+// Fix wierd looping
+// Only make the circle of the outside world change colour with number of deaths
+// Add text that shows the date and cum cases and cum deaths
+// Connect to vercel
