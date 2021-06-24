@@ -62,28 +62,21 @@ export const Home = () => {
       p5.background(220, 100);
       img.resize(750, 1000);
       img.loadPixels();
-      p5.frameRate(25);
+      p5.frameRate(10);
     };
 
     p5.draw = () => {
-      // show image
-
       // show lines over image for cases
       if (count > 0) {
         p5.image(img, 0, 0);
 
-        for (let i = 0; i < coronaStats.data[count].dailyCases / 25; i++) {
+        for (let i = 0; i < coronaStats.data[count].dailyCases / 10; i++) {
           let xPos = p5.random(img.width, 0);
           p5.line(xPos, 0, xPos, img.height);
         }
-        console.log(coronaStats.data[count].dailyCases);
 
         // turns a random pixel white per death
-        for (
-          let i = 0;
-          i < coronaStats.data[count].cumulativeDeaths / 50;
-          i++
-        ) {
+        for (let i = 0; i < coronaStats.data[count].dailyDeaths; i++) {
           let randomPixel = Math.floor(p5.random(0, img.pixels.length));
           //todo refactor
           img.pixels[randomPixel] = 255;
@@ -113,6 +106,11 @@ export default Home;
 // Favicon
 // landing page with some blurb
 // style page: desktop - image in the centre, mobile - image only
+
+// vaccines first vaccinations draw random height line at the bottom of the image maybe blue or grey/blue
+// line length increases over time to draw mountain range
+
+// second doses draw pink/purple/blue lines from the top of the image ideally avoiding the circle to look like sky
 
 // future:
 // save an image from a particular date or save final image
