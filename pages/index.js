@@ -52,6 +52,8 @@ export const Home = () => {
   const sketch = (p5) => {
     let img;
     let count = coronaStats.data.length - 1;
+    let vaccLineXPosCentre;
+    let vaccMaxLineHeight;
 
     p5.preload = () => {
       img = p5.loadImage("/window.jpg");
@@ -62,7 +64,14 @@ export const Home = () => {
       p5.background(220, 100);
       img.resize(750, 1000);
       img.loadPixels();
-      p5.frameRate(10);
+      p5.frameRate(25);
+      vaccLineXPosCentre = [
+        img.width * 0,
+        img.width * 0.2,
+        img.width * 0.5,
+        img.width * 0.8,
+      ];
+      vaccMaxLineHeight = [200, 400, 300, 350];
     };
 
     p5.draw = () => {
@@ -72,7 +81,26 @@ export const Home = () => {
 
         for (let i = 0; i < coronaStats.data[count].dailyCases / 10; i++) {
           let xPos = p5.random(img.width, 0);
+          p5.stroke(0);
           p5.line(xPos, 0, xPos, img.height);
+        }
+
+        for (
+          let i = 0;
+          i < coronaStats.data[count].firstVaccinationsCumulative / 50000;
+          i++
+        ) {
+          let randomChoice = Math.floor(p5.random(0, 4));
+          let xPos = p5.random(img.width, 0);
+          let xPosDiff = Math.abs(vaccLineXPosCentre[randomChoice] - xPos);
+          let lineHeight =
+            vaccMaxLineHeight[randomChoice] - xPosDiff * p5.random(0.5, 1.5);
+          p5.stroke(
+            p5.random(250, 255),
+            p5.random(220, 240),
+            p5.random(230, 250)
+          );
+          p5.line(xPos, img.height, xPos, img.height - lineHeight);
         }
 
         // turns a random pixel white per death
