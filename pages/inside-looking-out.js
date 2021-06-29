@@ -1,6 +1,6 @@
 import axios from "axios";
 import dynamic from "next/dynamic";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import * as Tone from "tone";
 
 const P5comp = dynamic(() => import("react-p5-wrapper"), { ssr: false });
@@ -32,12 +32,6 @@ const apiParams = {
 
 export const InsideLookingOut = () => {
   const [coronaStats, setCoronaStats] = useState(null);
-  const [droneAPlaying, setDroneAPlaying] = useState(true);
-  const [droneBPlaying, setDroneBPlaying] = useState(true);
-
-  const [droneCPlaying, setDroneCPlaying] = useState(true);
-
-  const [droneDPlaying, setDroneDPlaying] = useState(true);
 
   const getData = async (queries) => {
     const endpoint = "https://api.coronavirus.data.gov.uk/v1/data";
@@ -75,16 +69,73 @@ export const InsideLookingOut = () => {
     let droneSynthB;
     let droneSynthC;
     let droneSynthD;
+    let droneSynthE;
+
+    let droneBPlaying;
+    let droneCPlaying;
+    let droneDPlaying;
+    let droneEPlaying;
 
     p5.preload = () => {
       img = p5.loadImage("/window.jpg");
     };
 
     p5.setup = () => {
-      droneSynthA = new Tone.Synth({}).toDestination();
-      droneSynthB = new Tone.Synth({}).toDestination();
-      droneSynthC = new Tone.Synth({}).toDestination();
-      droneSynthD = new Tone.Synth({}).toDestination();
+      droneSynthA = new Tone.Synth({
+        oscillator: {
+          type: "sine",
+        },
+        envelope: {
+          attack: 2,
+          decay: 0.1,
+          sustain: 0.3,
+          release: 2,
+        },
+      }).toDestination();
+      droneSynthB = new Tone.Synth({
+        oscillator: {
+          type: "triangle",
+        },
+        envelope: {
+          attack: 2,
+          decay: 0.1,
+          sustain: 0.3,
+          release: 2,
+        },
+      }).toDestination();
+      droneSynthC = new Tone.Synth({
+        oscillator: {
+          type: "triangle",
+        },
+        envelope: {
+          attack: 2,
+          decay: 0.1,
+          sustain: 0.3,
+          release: 2,
+        },
+      }).toDestination();
+      droneSynthD = new Tone.Synth({
+        oscillator: {
+          type: "triangle",
+        },
+        envelope: {
+          attack: 2,
+          decay: 0.1,
+          sustain: 0.3,
+          release: 0.1,
+        },
+      }).toDestination();
+      droneSynthE = new Tone.Synth({
+        oscillator: {
+          type: "square",
+        },
+        envelope: {
+          attack: 2,
+          decay: 0.1,
+          sustain: 0.3,
+          release: 0.1,
+        },
+      }).toDestination();
       droneSynthA.triggerAttack("C2");
 
       p5.createCanvas(750, 1000);
@@ -106,33 +157,45 @@ export const InsideLookingOut = () => {
 
         if (coronaStats.data[count].dailyCases > 1000) {
           if (!droneBPlaying) {
-            droneSynthB.triggerAttack("G2");
-            setDroneBPlaying(true);
+            droneSynthB.triggerAttack("Eb2");
+            droneBPlaying = true;
           }
         } else {
           droneSynthB.triggerRelease();
-          setDroneBPlaying(false);
+          droneBPlaying = false;
         }
 
         if (coronaStats.data[count].dailyCases > 5000) {
           if (!droneCPlaying) {
-            droneSynthC.triggerAttack("C3");
-            setDroneCPlaying(true);
+            droneSynthC.triggerAttack("G3");
+            droneCPlaying = true;
           }
         } else {
           droneSynthC.triggerRelease();
-          setDroneCPlaying(false);
+          droneCPlaying = false;
         }
 
-        if (coronaStats.data[count].dailyCases > 20000) {
+        if (coronaStats.data[count].dailyCases > 18000) {
           if (!droneDPlaying) {
-            droneSynthD.triggerAttack("G3");
-            setDroneDPlaying(true);
+            droneSynthD.triggerAttack("Bb3");
+            droneDPlaying = true;
           }
         } else {
           droneSynthD.triggerRelease();
-          setDroneDPlaying(false);
+          droneDPlaying = false;
         }
+
+        if (coronaStats.data[count].dailyCases > 22000) {
+          if (!droneEPlaying) {
+            droneSynthE.triggerAttack("C6");
+            droneEPlaying = true;
+          }
+        } else {
+          droneSynthE.triggerRelease();
+          droneEPlaying = false;
+        }
+
+        console.log(coronaStats.data[count].dailyCases);
 
         // turns a random pixel white per death
         for (let i = 0; i < coronaStats.data[count].dailyDeaths; i++) {
@@ -165,11 +228,6 @@ export default InsideLookingOut;
 // Favicon
 // landing page with some blurb
 // style page: desktop - image in the centre, mobile - image only
-
-// vaccines first vaccinations draw random height line at the bottom of the image maybe blue or grey/blue
-// line length increases over time to draw mountain range
-
-// second doses draw pink/purple/blue lines from the top of the image ideally avoiding the circle to look like sky
 
 // future:
 // save an image from a particular date or save final image
