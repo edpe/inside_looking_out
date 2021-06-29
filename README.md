@@ -1,6 +1,6 @@
 # Inside Looking Out
 
-A [P5.js](https://p5js.org/) project that uses live [Coronavirus data](https://coronavirus.data.gov.uk/details/developers-guide) to process an image over time
+A [P5.js](https://p5js.org/) project that uses live [Coronavirus data](https://coronavirus.data.gov.uk/details/developers-guide) to process an image over time. Sound is made using the [Tone.js](https://tonejs.github.io/) web audio framework.
 
 Inside Looking Out steps through recorded statistics for each day of the Coronavirus pandemic in the UK. Each frame obscures a photograph of a window with a horizontal line representing each new case registered on that day. As the frames advance, a pixel is removed to represent each death, eroding the photograph until a final static image is revealed representing yesterdays cases and cumulative deaths.
 
@@ -18,3 +18,5 @@ yarn dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+Or see it live [here](https://inside-looking-out.vercel.app/)
