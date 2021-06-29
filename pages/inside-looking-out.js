@@ -32,6 +32,12 @@ const apiParams = {
 
 export const InsideLookingOut = () => {
   const [coronaStats, setCoronaStats] = useState(null);
+  const [droneAPlaying, setDroneAPlaying] = useState(true);
+  const [droneBPlaying, setDroneBPlaying] = useState(true);
+
+  const [droneCPlaying, setDroneCPlaying] = useState(true);
+
+  const [droneDPlaying, setDroneDPlaying] = useState(true);
 
   const getData = async (queries) => {
     const endpoint = "https://api.coronavirus.data.gov.uk/v1/data";
@@ -65,29 +71,22 @@ export const InsideLookingOut = () => {
   const sketch = (p5) => {
     let img;
     let count = coronaStats.data.length - 1;
-    let synth;
-    let polysynth;
+    let droneSynthA;
+    let droneSynthB;
+    let droneSynthC;
+    let droneSynthD;
 
     p5.preload = () => {
       img = p5.loadImage("/window.jpg");
     };
 
     p5.setup = () => {
-      synth = new Tone.Synth({
-        oscillator: {
-          type: "sine",
-          modulationFrequency: 0.2,
-        },
-        envelope: {
-          attack: 0,
-          decay: 0.1,
-          sustain: 0,
-          release: 0.1,
-        },
-      }).toDestination();
-      polysynth = new Tone.PolySynth({
-        oscilator: synth,
-      });
+      droneSynthA = new Tone.Synth({}).toDestination();
+      droneSynthB = new Tone.Synth({}).toDestination();
+      droneSynthC = new Tone.Synth({}).toDestination();
+      droneSynthD = new Tone.Synth({}).toDestination();
+      droneSynthA.triggerAttack("C2");
+
       p5.createCanvas(750, 1000);
       p5.background(220, 100);
       img.resize(750, 1000);
@@ -103,7 +102,36 @@ export const InsideLookingOut = () => {
         for (let i = 0; i < coronaStats.data[count].dailyCases / 10; i++) {
           let xPos = p5.random(img.width, 0);
           p5.line(xPos, 0, xPos, img.height);
-          polysynth.triggerAttackRelease("E4", "5hz");
+        }
+
+        if (coronaStats.data[count].dailyCases > 1000) {
+          if (!droneBPlaying) {
+            droneSynthB.triggerAttack("G2");
+            setDroneBPlaying(true);
+          }
+        } else {
+          droneSynthB.triggerRelease();
+          setDroneBPlaying(false);
+        }
+
+        if (coronaStats.data[count].dailyCases > 5000) {
+          if (!droneCPlaying) {
+            droneSynthC.triggerAttack("C3");
+            setDroneCPlaying(true);
+          }
+        } else {
+          droneSynthC.triggerRelease();
+          setDroneCPlaying(false);
+        }
+
+        if (coronaStats.data[count].dailyCases > 20000) {
+          if (!droneDPlaying) {
+            droneSynthD.triggerAttack("G3");
+            setDroneDPlaying(true);
+          }
+        } else {
+          droneSynthD.triggerRelease();
+          setDroneDPlaying(false);
         }
 
         // turns a random pixel white per death
