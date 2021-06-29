@@ -1,4 +1,5 @@
 import axios from "axios";
+import { getFontDefinitionFromNetwork } from "next/dist/next-server/server/font-utils";
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 
@@ -52,6 +53,7 @@ export const Home = () => {
   const sketch = (p5) => {
     let img;
     let count = coronaStats.data.length - 1;
+    let vaccinePoints = [];
 
     p5.preload = () => {
       img = p5.loadImage("/window.jpg");
@@ -62,7 +64,7 @@ export const Home = () => {
       p5.background(220, 100);
       img.resize(750, 1000);
       img.loadPixels();
-      p5.frameRate(10);
+      p5.frameRate();
     };
 
     p5.draw = () => {
@@ -70,9 +72,26 @@ export const Home = () => {
       if (count > 0) {
         p5.image(img, 0, 0);
 
+        for (
+          let i = 0;
+          i < Math.floor(coronaStats.data[count].firstVaccinationsDaily / 1000);
+          i++
+        ) {
+          //
+          let xPointPos = Math.floor(p5.random(img.width, 0));
+          let yPointPos = count;
+          vaccinePoints.push({ x: xPointPos, y: yPointPos });
+        }
+
+        for (let i = 0; i < vaccinePoints.length; ) {
+          p5.stroke(100, 150, 255);
+          p5.point(vaccinePoints[i].x, vaccinePoints[i].y);
+        }
+
         for (let i = 0; i < coronaStats.data[count].dailyCases / 10; i++) {
-          let xPos = p5.random(img.width, 0);
-          p5.line(xPos, 0, xPos, img.height);
+          let xLinePos = p5.random(img.width, 0);
+          p5.stroke(0);
+          p5.line(xLinePos, 0, xLinePos, img.height);
         }
 
         // turns a random pixel white per death
