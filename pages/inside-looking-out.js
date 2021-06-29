@@ -65,6 +65,9 @@ export const InsideLookingOut = () => {
   const sketch = (p5) => {
     let img;
     let count = coronaStats.data.length - 1;
+    let reverb;
+    let bitCrusher;
+    let distortion;
     let droneSynthA;
     let droneSynthB;
     let droneSynthC;
@@ -81,6 +84,10 @@ export const InsideLookingOut = () => {
     };
 
     p5.setup = () => {
+      reverb = new Tone.Reverb(3);
+      bitCrusher = new Tone.BitCrusher(8);
+      distortion = new Tone.Distortion(0.5);
+
       droneSynthA = new Tone.Synth({
         oscillator: {
           type: "sine",
@@ -102,7 +109,7 @@ export const InsideLookingOut = () => {
           sustain: 0.3,
           release: 2,
         },
-      }).toDestination();
+      });
       droneSynthC = new Tone.Synth({
         oscillator: {
           type: "triangle",
@@ -113,7 +120,7 @@ export const InsideLookingOut = () => {
           sustain: 0.3,
           release: 2,
         },
-      }).toDestination();
+      });
       droneSynthD = new Tone.Synth({
         oscillator: {
           type: "triangle",
@@ -122,21 +129,27 @@ export const InsideLookingOut = () => {
           attack: 2,
           decay: 0.1,
           sustain: 0.3,
-          release: 0.1,
+          release: 2,
         },
-      }).toDestination();
+      });
       droneSynthE = new Tone.Synth({
         oscillator: {
-          type: "square",
+          type: "sine",
         },
         envelope: {
           attack: 2,
           decay: 0.1,
           sustain: 0.3,
-          release: 0.1,
+          release: 2,
         },
-      }).toDestination();
+      });
       droneSynthA.triggerAttack("C2");
+
+      droneSynthA.chain(bitCrusher, distortion, reverb, Tone.Destination);
+      droneSynthB.chain(bitCrusher, distortion, reverb, Tone.Destination);
+      droneSynthC.chain(bitCrusher, distortion, reverb, Tone.Destination);
+      droneSynthD.chain(bitCrusher, distortion, reverb, Tone.Destination);
+      droneSynthE.chain(bitCrusher, distortion, reverb, Tone.Destination);
 
       p5.createCanvas(750, 1000);
       p5.background(220, 100);
@@ -206,6 +219,12 @@ export const InsideLookingOut = () => {
           img.pixels[randomPixel + 2] = 255;
           img.pixels[randomPixel + 3] = 255;
         }
+      } else {
+        droneSynthA.triggerRelease();
+        droneSynthB.triggerRelease();
+        droneSynthC.triggerRelease();
+        droneSynthD.triggerRelease();
+        droneSynthE.triggerRelease();
       }
 
       count--;
