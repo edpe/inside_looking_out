@@ -66,7 +66,6 @@ export const InsideLookingOut = () => {
     let img;
     let count = coronaStats.data.length - 1;
     let reverb;
-    let bitCrusher;
     let distortion;
     let droneSynthA;
     let droneSynthB;
@@ -85,7 +84,6 @@ export const InsideLookingOut = () => {
 
     p5.setup = () => {
       reverb = new Tone.Reverb(3);
-      bitCrusher = new Tone.BitCrusher(8);
       distortion = new Tone.Distortion(0.5);
 
       droneSynthA = new Tone.Synth({
@@ -145,11 +143,11 @@ export const InsideLookingOut = () => {
       });
       droneSynthA.triggerAttack("C2");
 
-      droneSynthA.chain(bitCrusher, distortion, reverb, Tone.Destination);
-      droneSynthB.chain(bitCrusher, distortion, reverb, Tone.Destination);
-      droneSynthC.chain(bitCrusher, distortion, reverb, Tone.Destination);
-      droneSynthD.chain(bitCrusher, distortion, reverb, Tone.Destination);
-      droneSynthE.chain(bitCrusher, distortion, reverb, Tone.Destination);
+      droneSynthA.chain(distortion, reverb, Tone.Destination);
+      droneSynthB.chain(distortion, reverb, Tone.Destination);
+      droneSynthC.chain(distortion, reverb, Tone.Destination);
+      droneSynthD.chain(distortion, reverb, Tone.Destination);
+      droneSynthE.chain(distortion, reverb, Tone.Destination);
 
       p5.createCanvas(750, 1000);
       p5.background(220, 100);
@@ -207,8 +205,6 @@ export const InsideLookingOut = () => {
           droneSynthE.triggerRelease();
           droneEPlaying = false;
         }
-
-        console.log(coronaStats.data[count].dailyCases);
 
         // turns a random pixel white per death
         for (let i = 0; i < coronaStats.data[count].dailyDeaths; i++) {
