@@ -1,10 +1,17 @@
 import Link from "next/link";
+import styles from "../styles/Home.module.css";
 
 export const Home = () => {
   return (
     <>
-      <h1>Inside Looking Out</h1>
-      <Link href="/inside-looking-out">Click to play</Link>
+      <div className={styles.container}>
+        <div className={styles.title}>
+          <h1>Inside Looking Out</h1>
+          <Link href="/inside-looking-out" passHref>
+            <a>Click to play</a>
+          </Link>
+        </div>
+      </div>
     </>
   );
 };

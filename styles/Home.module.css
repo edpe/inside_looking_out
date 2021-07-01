@@ -6,6 +6,7 @@
   justify-content: center;
   align-items: center;
   height: 100vh;
+  background-color: black;
 }
 
 .main {
@@ -34,7 +35,7 @@
 }
 
 .title a {
-  color: #0070f3;
+  color: white;
   text-decoration: none;
 }
 
@@ -45,9 +46,10 @@
 }
 
 .title {
+  color: white;
   margin: 0;
   line-height: 1.15;
-  font-size: 4rem;
+  font-size: 2rem;
 }
 
 .title,
