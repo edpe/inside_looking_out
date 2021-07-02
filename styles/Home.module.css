@@ -1,21 +1,20 @@
 .container {
   min-height: 100vh;
-  padding: 0 0.5rem;
+  padding: 5rem;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
+  align-items: left;
   height: 100vh;
   background-color: black;
 }
 
 .main {
-  padding: 5rem 0;
   flex: 1;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: center;
+  align-items: left;
+  max-width: 800px;
 }
 
 .footer {
@@ -37,6 +36,8 @@
 .title a {
   color: white;
   text-decoration: none;
+  padding: 1rem 0;
+  font-size: 1.5rem;
 }
 
 .title a:hover,
@@ -49,12 +50,12 @@
   color: white;
   margin: 0;
   line-height: 1.15;
-  font-size: 2rem;
+  font-size: 1.5rem;
 }
 
 .title,
 .description {
-  text-align: center;
+  text-align: left;
 }
 
 .description {
