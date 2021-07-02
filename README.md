@@ -2,9 +2,12 @@
 
 A [P5.js](https://p5js.org/) project that uses live [Coronavirus data](https://coronavirus.data.gov.uk/details/developers-guide) to process an image over time. Sound is made using the [Tone.js](https://tonejs.github.io/) web audio framework.
 
-Inside Looking Out steps through recorded statistics for each day of the Coronavirus pandemic in the UK. Each frame obscures a photograph of a window with a horizontal line representing each new case registered on that day. As the frames advance, a pixel is removed to represent each death, eroding the photograph until a final static image is revealed representing yesterdays cases and cumulative deaths.
+Inside Looking Out uses live data from the UK Governments COVID-19 API as a narrative structure. Each day of the Coronavirus pandemic in the UK is represented by a single animation frame, creating an animated film that tells a story about the impact of the virus on the people of the UK.
+              
+Each frame shows a photograph of a circular window, obscured by horizontal lines representing each new case registered on that
+day. As the frames advance, a pixel is removed to represent each death, eroding the photograph until a final static image is revealed representing cases and cumulative statistics from the previous day.
 
-<img width="501" alt="2021-06-22" src="https://user-images.githubusercontent.com/32434854/123002435-d6b43480-d3a9-11eb-8c41-e8fd305678ff.png">
+![image](https://user-images.githubusercontent.com/32434854/124262176-9da65d80-db29-11eb-81ef-ebef16b74a03.png)
 
 
 ## Getting Started
