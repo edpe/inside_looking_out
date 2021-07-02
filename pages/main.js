@@ -1,7 +1,9 @@
 import axios from "axios";
 import dynamic from "next/dynamic";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import * as Tone from "tone";
+
+import styles from "../styles/Main.module.css";
 
 const P5comp = dynamic(() => import("react-p5-wrapper"), { ssr: false });
 
@@ -30,7 +32,7 @@ const apiParams = {
   structure: JSON.stringify(structure),
 };
 
-export const InsideLookingOut = () => {
+export const Main = () => {
   const [coronaStats, setCoronaStats] = useState(null);
 
   const getData = async (queries) => {
@@ -229,13 +231,21 @@ export const InsideLookingOut = () => {
   };
 
   if (!coronaStats) {
-    return <p>Loading data</p>;
+    return (
+      <div className={styles.container}>
+        <p classNaem={styles.text}>Loading data</p>
+      </div>
+    );
   }
 
-  return <P5comp sketch={sketch} />;
+  return (
+    <div className={styles.container}>
+      <P5comp sketch={sketch} />
+    </div>
+  );
 };
 
-export default InsideLookingOut;
+export default Main;
 
 // todo:
 // Only make the circle of the outside world change colour with number of deaths

@@ -7,7 +7,7 @@ export const Home = () => {
       <div className={styles.container}>
         <div className={styles.title}>
           <h1>Inside Looking Out</h1>
-          <Link href="/inside-looking-out" passHref>
+          <Link href="/main" passHref>
             <a>Click to play</a>
           </Link>
         </div>
