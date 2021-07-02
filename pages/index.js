@@ -9,11 +9,11 @@ export const Home = () => {
           <h1>Inside Looking Out</h1>
           <div className={styles.main}>
             <p>
-              Inside Looking Out uses live data from the UK Governments COVID-19
+              Inside Looking Out uses live data from the UK Government COVID-19
               API as a narrative structure. Each day of the Coronavirus pandemic
-              in the UK is represented by a single animation frame, creating an
-              animated film that tells a story about the impact of the virus on
-              the people of the UK.
+              in the UK is represented by a single frame, creating an animated
+              film that tells a story about the impact of the virus on the
+              people of the UK.
             </p>
             <p>
               Each frame shows a photograph of a circular window, obscured by
