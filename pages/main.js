@@ -248,12 +248,8 @@ export const Main = () => {
 export default Main;
 
 // todo:
-// Only make the circle of the outside world change colour with number of deaths
 // Add text that shows the date and cum cases and cum deaths
 // Favicon
-// landing page with some blurb
-// style page: desktop - image in the centre, mobile - image only
-
+// make a better layout and styles for small viewports
 // future:
 // save an image from a particular date or save final image
-// add sound with tone.js
