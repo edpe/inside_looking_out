@@ -150,22 +150,26 @@ export const Main = () => {
       droneSynthC.chain(distortion, reverb, Tone.Destination);
       droneSynthD.chain(distortion, reverb, Tone.Destination);
       droneSynthE.chain(distortion, reverb, Tone.Destination);
-
-      p5.createCanvas(750, 1000);
-      p5.background(220, 100);
-      img.resize(750, 1000);
+      if (p5.windowWidth <= 400) {
+        p5.createCanvas(p5.windowWidth, p5.windowHeight);
+        img.resize(p5.windowWidth, p5.windowWidth * 1.333);
+      } else {
+        p5.createCanvas(750, 1000);
+        img.resize(750, 1000);
+      }
       img.loadPixels();
       p5.frameRate(10);
     };
 
     p5.draw = () => {
+      p5.background(38, 42, 44);
       // show lines over image for cases
       if (count > 0) {
         p5.image(img, 0, 0);
 
         for (let i = 0; i < coronaStats.data[count].dailyCases / 10; i++) {
           let xPos = p5.random(img.width, 0);
-          p5.line(xPos, 0, xPos, img.height);
+          p5.line(xPos, 0, xPos, p5.windowHeight);
         }
 
         if (coronaStats.data[count].dailyCases > 1000) {

@@ -1,9 +1,15 @@
 .container {
   min-height: 100vh;
-  padding: 5rem;
+  padding: 1rem;
   display: flex;
   flex-direction: column;
   background-color: black;
+}
+
+@media (min-width: 400px) {
+  .container {
+  padding: 5rem;
+  }
 }
 
 .main {
@@ -34,7 +40,14 @@
   color: white;
   text-decoration: none;
   padding: 1rem 0;
+  font-size: 1.25rem;
+/* text-align: center; */
+}
+
+@media (min-width: 400px) {
+  .title a {
   font-size: 1.5rem;
+  }
 }
 
 .title a:hover,
@@ -46,8 +59,14 @@
 .title {
   color: white;
   margin: 0;
-  line-height: 1.15;
+  line-height: 1.5;
+  font-size: 1rem;
+}
+
+@media (min-width: 400px) {
+  .title {
   font-size: 1.5rem;
+  }
 }
 
 .title,
