@@ -80,6 +80,9 @@ export const Main = () => {
     let droneDPlaying;
     let droneEPlaying;
 
+    const isMobile = p5.windowWidth <= 400;
+    let mobileImageOffset;
+
     p5.preload = () => {
       img = p5.loadImage("/window.jpg");
     };
@@ -151,21 +154,32 @@ export const Main = () => {
       droneSynthD.chain(distortion, reverb, Tone.Destination);
       droneSynthE.chain(distortion, reverb, Tone.Destination);
 
-      p5.createCanvas(750, 1000);
-      p5.background(220, 100);
-      img.resize(750, 1000);
+      if (isMobile) {
+        p5.createCanvas(p5.windowWidth, p5.windowHeight);
+        img.resize(p5.windowWidth, p5.windowWidth * (1000 / 750));
+      } else {
+        p5.createCanvas(750, 1000);
+        img.resize(750, 1000);
+      }
       img.loadPixels();
       p5.frameRate(10);
+      mobileImageOffset = (p5.windowHeight - p5.windowWidth * (1000 / 750)) / 2;
     };
 
     p5.draw = () => {
       // show lines over image for cases
       if (count > 0) {
-        p5.image(img, 0, 0);
+        p5.background(40);
 
-        for (let i = 0; i < coronaStats.data[count].dailyCases / 10; i++) {
+        p5.image(img, 0, isMobile ? mobileImageOffset : 0);
+
+        for (
+          let i = 0;
+          i < coronaStats.data[count].dailyCases / (isMobile ? 100 : 10);
+          i++
+        ) {
           let xPos = p5.random(img.width, 0);
-          p5.line(xPos, 0, xPos, img.height);
+          p5.line(xPos, 0, xPos, isMobile ? p5.windowHeight : img.height);
         }
 
         if (coronaStats.data[count].dailyCases > 1000) {
@@ -209,7 +223,11 @@ export const Main = () => {
         }
 
         // turns a random pixel white per death
-        for (let i = 0; i < coronaStats.data[count].dailyDeaths; i++) {
+        for (
+          let i = 0;
+          i < coronaStats.data[count].dailyDeaths / (isMobile ? 4 : 0);
+          i++
+        ) {
           let randomPixel = Math.floor(p5.random(0, img.pixels.length));
           //todo refactor
           img.pixels[randomPixel] = 255;
