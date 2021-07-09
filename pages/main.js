@@ -44,7 +44,6 @@ export const Main = () => {
     });
 
     if (status >= 400) throw new Error(statusText);
-
     return setCoronaStats(data);
   };
 
@@ -186,48 +185,52 @@ export const Main = () => {
           if (!droneBPlaying) {
             droneSynthB.triggerAttack("Eb2");
             droneBPlaying = true;
+            // console.log("start drone b");
           }
         } else {
           droneSynthB.triggerRelease();
           droneBPlaying = false;
+          // console.log("strop drone b");
         }
 
         if (coronaStats.data[count].dailyCases > 5000) {
           if (!droneCPlaying) {
             droneSynthC.triggerAttack("G3");
             droneCPlaying = true;
+            // ("start drone c");
           }
         } else {
           droneSynthC.triggerRelease();
           droneCPlaying = false;
+          // console.log("strop drone c");
         }
 
         if (coronaStats.data[count].dailyCases > 18000) {
           if (!droneDPlaying) {
             droneSynthD.triggerAttack("Bb3");
             droneDPlaying = true;
+            // ("start drone d");
           }
         } else {
           droneSynthD.triggerRelease();
           droneDPlaying = false;
+          // console.log("strop drone d");
         }
 
         if (coronaStats.data[count].dailyCases > 22000) {
           if (!droneEPlaying) {
             droneSynthE.triggerAttack("C6");
             droneEPlaying = true;
+            // ("start drone e");
           }
         } else {
           droneSynthE.triggerRelease();
           droneEPlaying = false;
+          // console.log("strop drone e");
         }
 
         // turns a random pixel white per death
-        for (
-          let i = 0;
-          i < coronaStats.data[count].dailyDeaths / (isMobile ? 3 : 0);
-          i++
-        ) {
+        for (let i = 0; i < coronaStats.data[count].dailyDeaths; i++) {
           let randomPixel = Math.floor(p5.random(0, img.pixels.length));
           //todo refactor
           img.pixels[randomPixel] = 255;
