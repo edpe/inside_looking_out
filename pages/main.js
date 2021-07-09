@@ -175,7 +175,7 @@ export const Main = () => {
 
         for (
           let i = 0;
-          i < coronaStats.data[count].dailyCases / (isMobile ? 100 : 10);
+          i < coronaStats.data[count].dailyCases / (isMobile ? 40 : 10);
           i++
         ) {
           let xPos = p5.random(img.width, 0);
@@ -225,7 +225,7 @@ export const Main = () => {
         // turns a random pixel white per death
         for (
           let i = 0;
-          i < coronaStats.data[count].dailyDeaths / (isMobile ? 4 : 0);
+          i < coronaStats.data[count].dailyDeaths / (isMobile ? 3 : 0);
           i++
         ) {
           let randomPixel = Math.floor(p5.random(0, img.pixels.length));
