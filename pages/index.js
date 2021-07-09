@@ -17,11 +17,11 @@ export const Home = () => {
             </p>
             <p>
               Each frame shows a photograph of a circular window, obscured by
-              horizontal lines representing each new case registered on that
-              day. As the frames advance, a pixel is removed to represent each
-              death, eroding the photograph until a final static image is
-              revealed representing cases and cumulative statistics from the
-              previous day.
+              vertical lines representing each new case registered on that day.
+              As the frames advance, a pixel is removed to represent each death,
+              eroding the photograph until a final static image is revealed
+              representing cases and cumulative statistics from the previous
+              day.
             </p>
             <a
               className={styles.inlineLink}
