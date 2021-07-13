@@ -34,6 +34,61 @@ const apiParams = {
 
 export const Main = () => {
   const [coronaStats, setCoronaStats] = useState(null);
+  const droneSynthA = new Tone.Synth({
+    oscillator: {
+      type: "sine",
+    },
+    envelope: {
+      attack: 2,
+      decay: 0.1,
+      sustain: 0.3,
+      release: 2,
+    },
+  }).toDestination();
+  const droneSynthB = new Tone.Synth({
+    oscillator: {
+      type: "triangle",
+    },
+    envelope: {
+      attack: 2,
+      decay: 0.1,
+      sustain: 0.3,
+      release: 2,
+    },
+  });
+  const droneSynthC = new Tone.Synth({
+    oscillator: {
+      type: "triangle",
+    },
+    envelope: {
+      attack: 2,
+      decay: 0.1,
+      sustain: 0.3,
+      release: 2,
+    },
+  });
+  const droneSynthD = new Tone.Synth({
+    oscillator: {
+      type: "triangle",
+    },
+    envelope: {
+      attack: 2,
+      decay: 0.1,
+      sustain: 0.3,
+      release: 2,
+    },
+  });
+  const droneSynthE = new Tone.Synth({
+    oscillator: {
+      type: "sine",
+    },
+    envelope: {
+      attack: 2,
+      decay: 0.1,
+      sustain: 0.3,
+      release: 2,
+    },
+  });
 
   const getData = async (queries) => {
     const endpoint = "https://api.coronavirus.data.gov.uk/v1/data";
@@ -48,6 +103,7 @@ export const Main = () => {
   };
 
   useEffect(() => {
+    console.log(Tone.getContext());
     if (typeof window !== "undefined") {
       // play audio on user interaction, due to Chrome policy not allowing autoplay
       document.addEventListener("click", playAudio);
@@ -57,6 +113,13 @@ export const Main = () => {
         document.removeEventListener("click", playAudio);
       };
     }
+    return () => {
+      droneSynthA.triggerRelease();
+      droneSynthB.triggerRelease();
+      droneSynthC.triggerRelease();
+      droneSynthD.triggerRelease();
+      droneSynthE.triggerRelease();
+    };
   });
 
   useEffect(() => {
@@ -68,11 +131,6 @@ export const Main = () => {
     let count = coronaStats.data.length - 1;
     let reverb;
     let distortion;
-    let droneSynthA;
-    let droneSynthB;
-    let droneSynthC;
-    let droneSynthD;
-    let droneSynthE;
 
     let droneBPlaying;
     let droneCPlaying;
@@ -90,61 +148,6 @@ export const Main = () => {
       reverb = new Tone.Reverb(3);
       distortion = new Tone.Distortion(0.5);
 
-      droneSynthA = new Tone.Synth({
-        oscillator: {
-          type: "sine",
-        },
-        envelope: {
-          attack: 2,
-          decay: 0.1,
-          sustain: 0.3,
-          release: 2,
-        },
-      }).toDestination();
-      droneSynthB = new Tone.Synth({
-        oscillator: {
-          type: "triangle",
-        },
-        envelope: {
-          attack: 2,
-          decay: 0.1,
-          sustain: 0.3,
-          release: 2,
-        },
-      });
-      droneSynthC = new Tone.Synth({
-        oscillator: {
-          type: "triangle",
-        },
-        envelope: {
-          attack: 2,
-          decay: 0.1,
-          sustain: 0.3,
-          release: 2,
-        },
-      });
-      droneSynthD = new Tone.Synth({
-        oscillator: {
-          type: "triangle",
-        },
-        envelope: {
-          attack: 2,
-          decay: 0.1,
-          sustain: 0.3,
-          release: 2,
-        },
-      });
-      droneSynthE = new Tone.Synth({
-        oscillator: {
-          type: "sine",
-        },
-        envelope: {
-          attack: 2,
-          decay: 0.1,
-          sustain: 0.3,
-          release: 2,
-        },
-      });
       droneSynthA.triggerAttack("C2");
 
       droneSynthA.chain(distortion, reverb, Tone.Destination);
@@ -269,8 +272,9 @@ export const Main = () => {
 export default Main;
 
 // todo:
-// refactor p5 code to use map for synths
 // break code into functions? more readable?
-// tone js cleanup - on cmponent unmount do Tone.context.dispose()
+// tone js cleanup - on component unmount do Tone.context.dispose()
 // Add text that shows the date and cum cases and cum deaths
+// refactor p5 code to use map for synths
+
 // Favicon

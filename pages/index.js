@@ -5,9 +5,9 @@ export const Home = () => {
   return (
     <>
       <div className={styles.container}>
-        <div className={styles.title}>
-          <h1>Inside Looking Out</h1>
-          <div className={styles.main}>
+        <div className={styles.main}>
+          <h1 className={styles.title}>Inside Looking Out</h1>
+          <div className={styles.description}>
             <p>
               Inside Looking Out uses live data from the UK Government COVID-19
               API as a narrative structure. Each day of the Coronavirus pandemic
