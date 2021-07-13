@@ -2,16 +2,10 @@
   min-height: 100vh;
   display: flex;
   height: 100vh;
-}
-
-@media (min-width: 400px) {
-  .container {
   justify-content: center;
   align-items: center;
-  flex-direction: column;
   background-color: black;
-
-  }
+  flex-direction: column;
 }
 
 .text {

@@ -254,7 +254,7 @@ export const Main = () => {
   if (!coronaStats) {
     return (
       <div className={styles.container}>
-        <p classNaem={styles.text}>Loading data</p>
+        <p className={styles.text}>Loading data</p>
       </div>
     );
   }
@@ -269,8 +269,8 @@ export const Main = () => {
 export default Main;
 
 // todo:
+// refactor p5 code to use map for synths
+// break code into functions? more readable?
+// tone js cleanup - on cmponent unmount do Tone.context.dispose()
 // Add text that shows the date and cum cases and cum deaths
 // Favicon
-// make a better layout and styles for small viewports
-// future:
-// save an image from a particular date or save final image
