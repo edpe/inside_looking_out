@@ -103,7 +103,6 @@ export const Main = () => {
   };
 
   useEffect(() => {
-    console.log(Tone.getContext());
     if (typeof window !== "undefined") {
       // play audio on user interaction, due to Chrome policy not allowing autoplay
       document.addEventListener("click", playAudio);
@@ -188,48 +187,40 @@ export const Main = () => {
           if (!droneBPlaying) {
             droneSynthB.triggerAttack("Eb2");
             droneBPlaying = true;
-            // console.log("start drone b");
           }
         } else {
           droneSynthB.triggerRelease();
           droneBPlaying = false;
-          // console.log("strop drone b");
         }
 
         if (coronaStats.data[count].dailyCases > 5000) {
           if (!droneCPlaying) {
             droneSynthC.triggerAttack("G3");
             droneCPlaying = true;
-            // ("start drone c");
           }
         } else {
           droneSynthC.triggerRelease();
           droneCPlaying = false;
-          // console.log("strop drone c");
         }
 
         if (coronaStats.data[count].dailyCases > 18000) {
           if (!droneDPlaying) {
             droneSynthD.triggerAttack("Bb3");
             droneDPlaying = true;
-            // ("start drone d");
           }
         } else {
           droneSynthD.triggerRelease();
           droneDPlaying = false;
-          // console.log("strop drone d");
         }
 
         if (coronaStats.data[count].dailyCases > 22000) {
           if (!droneEPlaying) {
             droneSynthE.triggerAttack("C6");
             droneEPlaying = true;
-            // ("start drone e");
           }
         } else {
           droneSynthE.triggerRelease();
           droneEPlaying = false;
-          // console.log("strop drone e");
         }
 
         // turns a random pixel white per death
@@ -273,8 +264,8 @@ export default Main;
 
 // todo:
 // break code into functions? more readable?
-// tone js cleanup - on component unmount do Tone.context.dispose()
 // Add text that shows the date and cum cases and cum deaths
 // refactor p5 code to use map for synths
-
 // Favicon
+
+// stretch - allow user to select area and filter results so they get a piece specific to their area
