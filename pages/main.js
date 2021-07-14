@@ -34,61 +34,40 @@ const apiParams = {
 
 export const Main = () => {
   const [coronaStats, setCoronaStats] = useState(null);
-  const droneSynthA = new Tone.Synth({
-    oscillator: {
-      type: "sine",
-    },
-    envelope: {
-      attack: 2,
-      decay: 0.1,
-      sustain: 0.3,
-      release: 2,
-    },
-  }).toDestination();
-  const droneSynthB = new Tone.Synth({
-    oscillator: {
-      type: "triangle",
-    },
-    envelope: {
-      attack: 2,
-      decay: 0.1,
-      sustain: 0.3,
-      release: 2,
-    },
-  });
-  const droneSynthC = new Tone.Synth({
-    oscillator: {
-      type: "triangle",
-    },
-    envelope: {
-      attack: 2,
-      decay: 0.1,
-      sustain: 0.3,
-      release: 2,
-    },
-  });
-  const droneSynthD = new Tone.Synth({
-    oscillator: {
-      type: "triangle",
-    },
-    envelope: {
-      attack: 2,
-      decay: 0.1,
-      sustain: 0.3,
-      release: 2,
-    },
-  });
-  const droneSynthE = new Tone.Synth({
-    oscillator: {
-      type: "sine",
-    },
-    envelope: {
-      attack: 2,
-      decay: 0.1,
-      sustain: 0.3,
-      release: 2,
-    },
-  });
+
+  // tone setup synths and effects
+  const synthState = [
+    { voice: "sine", triggerAmount: 0, note: "C2", isPlaying: true },
+    { voice: "triangle", triggerAmount: 1000, note: "Eb2", isPlaying: false },
+    { voice: "triangle", triggerAmount: 5000, note: "G3", isPlaying: false },
+    { voice: "triangle", triggerAmount: 18000, note: "Bb2", isPlaying: false },
+    { voice: "sine", triggerAmount: 22000, note: "C6", isPlaying: false },
+  ];
+
+  const synths = [];
+
+  const reverb = new Tone.Reverb(3);
+  const distortion = new Tone.Distortion(0.5);
+
+  synthState.forEach((synthState) =>
+    synths.push(
+      new Tone.Synth({
+        oscillator: {
+          type: synthState.voice,
+        },
+        envelope: {
+          attack: 2,
+          decay: 0.1,
+          sustain: 0.3,
+          release: 2,
+        },
+      }).chain(distortion, reverb, Tone.Destination)
+    )
+  );
+
+  const stopSynths = () => {
+    synths.forEach((synth) => synth.triggerRelease());
+  };
 
   const getData = async (queries) => {
     const endpoint = "https://api.coronavirus.data.gov.uk/v1/data";
@@ -113,11 +92,7 @@ export const Main = () => {
       };
     }
     return () => {
-      droneSynthA.triggerRelease();
-      droneSynthB.triggerRelease();
-      droneSynthC.triggerRelease();
-      droneSynthD.triggerRelease();
-      droneSynthE.triggerRelease();
+      stopSynths();
     };
   });
 
@@ -128,13 +103,6 @@ export const Main = () => {
   const sketch = (p5) => {
     let img;
     let count = coronaStats.data.length - 1;
-    let reverb;
-    let distortion;
-
-    let droneBPlaying;
-    let droneCPlaying;
-    let droneDPlaying;
-    let droneEPlaying;
 
     const isMobile = p5.windowWidth <= 400;
     let mobileImageOffset;
@@ -144,16 +112,7 @@ export const Main = () => {
     };
 
     p5.setup = () => {
-      reverb = new Tone.Reverb(3);
-      distortion = new Tone.Distortion(0.5);
-
-      droneSynthA.triggerAttack("C2");
-
-      droneSynthA.chain(distortion, reverb, Tone.Destination);
-      droneSynthB.chain(distortion, reverb, Tone.Destination);
-      droneSynthC.chain(distortion, reverb, Tone.Destination);
-      droneSynthD.chain(distortion, reverb, Tone.Destination);
-      droneSynthE.chain(distortion, reverb, Tone.Destination);
+      synths[0].triggerAttack(synthState[0].note);
 
       if (isMobile) {
         p5.createCanvas(p5.windowWidth, p5.windowHeight);
@@ -183,45 +142,17 @@ export const Main = () => {
           p5.line(xPos, 0, xPos, isMobile ? p5.windowHeight : img.height);
         }
 
-        if (coronaStats.data[count].dailyCases > 1000) {
-          if (!droneBPlaying) {
-            droneSynthB.triggerAttack("Eb2");
-            droneBPlaying = true;
+        synthState.forEach((synth, index) => {
+          if (coronaStats.data[count].dailyCases > synth.triggerAmount) {
+            if (!synth.isPlaying) {
+              synths[index].triggerAttack(synth.note);
+              synth.isPlaying = true;
+            }
+          } else {
+            synths[index].triggerRelease();
+            synth.isPlaying = false;
           }
-        } else {
-          droneSynthB.triggerRelease();
-          droneBPlaying = false;
-        }
-
-        if (coronaStats.data[count].dailyCases > 5000) {
-          if (!droneCPlaying) {
-            droneSynthC.triggerAttack("G3");
-            droneCPlaying = true;
-          }
-        } else {
-          droneSynthC.triggerRelease();
-          droneCPlaying = false;
-        }
-
-        if (coronaStats.data[count].dailyCases > 18000) {
-          if (!droneDPlaying) {
-            droneSynthD.triggerAttack("Bb3");
-            droneDPlaying = true;
-          }
-        } else {
-          droneSynthD.triggerRelease();
-          droneDPlaying = false;
-        }
-
-        if (coronaStats.data[count].dailyCases > 22000) {
-          if (!droneEPlaying) {
-            droneSynthE.triggerAttack("C6");
-            droneEPlaying = true;
-          }
-        } else {
-          droneSynthE.triggerRelease();
-          droneEPlaying = false;
-        }
+        });
 
         // turns a random pixel white per death
         for (let i = 0; i < coronaStats.data[count].dailyDeaths; i++) {
@@ -233,11 +164,7 @@ export const Main = () => {
           img.pixels[randomPixel + 3] = 255;
         }
       } else {
-        droneSynthA.triggerRelease();
-        droneSynthB.triggerRelease();
-        droneSynthC.triggerRelease();
-        droneSynthD.triggerRelease();
-        droneSynthE.triggerRelease();
+        stopSynths();
       }
 
       count--;
@@ -264,8 +191,8 @@ export default Main;
 
 // todo:
 // break code into functions? more readable?
-// Add text that shows the date and cum cases and cum deaths
-// refactor p5 code to use map for synths
 // Favicon
+// finalise styling for index page
+// make play button
 
 // stretch - allow user to select area and filter results so they get a piece specific to their area
