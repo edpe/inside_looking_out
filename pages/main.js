@@ -18,13 +18,7 @@ const structure = {
   name: "areaName",
   code: "areaCode",
   dailyCases: "newCasesByPublishDate",
-  cumulativeCases: "cumCasesByPublishDate",
   dailyDeaths: "newDeaths28DaysByPublishDate",
-  cumulativeDeaths: "cumDeaths28DaysByPublishDate",
-  firstVaccinationsDaily: "newPeopleVaccinatedFirstDoseByPublishDate",
-  firstVaccinationsCumulative: "cumPeopleVaccinatedFirstDoseByPublishDate",
-  secondVaccinationsDaily: "newPeopleVaccinatedSecondDoseByPublishDate",
-  secondVaccinationsCumulative: "cumPeopleVaccinatedSecondDoseByPublishDate",
 };
 
 const apiParams = {
@@ -46,28 +40,33 @@ export const Main = () => {
 
   const synths = [];
 
-  const reverb = new Tone.Reverb(3);
-  const distortion = new Tone.Distortion(0.5);
+  useEffect(() => {
+    const reverb = new Tone.Reverb(3);
+    const distortion = new Tone.Distortion(0.5);
 
-  synthState.forEach((synthState) =>
-    synths.push(
-      new Tone.Synth({
-        oscillator: {
-          type: synthState.voice,
-        },
-        envelope: {
-          attack: 2,
-          decay: 0.1,
-          sustain: 0.3,
-          release: 2,
-        },
-      }).chain(distortion, reverb, Tone.Destination)
-    )
-  );
+    synthState.forEach((synthState) =>
+      synths.push(
+        new Tone.Synth({
+          oscillator: {
+            type: synthState.voice,
+          },
+          envelope: {
+            attack: 2,
+            decay: 0.1,
+            sustain: 0.3,
+            release: 2,
+          },
+        }).chain(distortion, reverb, Tone.Destination)
+      )
+    );
 
-  const stopSynths = () => {
-    synths.forEach((synth) => synth.triggerRelease());
-  };
+    const stopSynths = () => {
+      synths.forEach((synth) => synth.triggerRelease());
+    };
+    return () => {
+      stopSynths();
+    };
+  });
 
   const getData = async (queries) => {
     const endpoint = "https://api.coronavirus.data.gov.uk/v1/data";
@@ -91,9 +90,6 @@ export const Main = () => {
         document.removeEventListener("click", playAudio);
       };
     }
-    return () => {
-      stopSynths();
-    };
   });
 
   useEffect(() => {
@@ -102,18 +98,15 @@ export const Main = () => {
 
   const sketch = (p5) => {
     let img;
-    let count = coronaStats.data.length - 1;
-
-    const isMobile = p5.windowWidth <= 400;
     let mobileImageOffset;
+    let isMobile = p5.windowWidth <= 400;
+    let count = coronaStats.data.length - 1;
 
     p5.preload = () => {
       img = p5.loadImage("/window.jpg");
     };
 
     p5.setup = () => {
-      synths[0].triggerAttack(synthState[0].note);
-
       if (isMobile) {
         p5.createCanvas(p5.windowWidth, p5.windowHeight);
         img.resize(p5.windowWidth, p5.windowWidth * (1000 / 750));
@@ -142,6 +135,17 @@ export const Main = () => {
           p5.line(xPos, 0, xPos, isMobile ? p5.windowHeight : img.height);
         }
 
+        // turns a random pixel white per death
+        for (let i = 0; i < coronaStats.data[count].dailyDeaths; i++) {
+          let randomPixel = Math.floor(p5.random(0, img.pixels.length));
+          //todo refactor as random pixel isn't necessarily the first in the series
+          img.pixels[randomPixel] = 255;
+          img.pixels[randomPixel + 1] = 255;
+          img.pixels[randomPixel + 2] = 255;
+          img.pixels[randomPixel + 3] = 255;
+        }
+
+        // starts synth playing when cases reach the specified trigger level
         synthState.forEach((synth, index) => {
           if (coronaStats.data[count].dailyCases > synth.triggerAmount) {
             if (!synth.isPlaying) {
@@ -154,16 +158,6 @@ export const Main = () => {
           }
         });
 
-        // turns a random pixel white per death
-        for (let i = 0; i < coronaStats.data[count].dailyDeaths; i++) {
-          let randomPixel = Math.floor(p5.random(0, img.pixels.length));
-          //todo refactor
-          img.pixels[randomPixel] = 255;
-          img.pixels[randomPixel + 1] = 255;
-          img.pixels[randomPixel + 2] = 255;
-          img.pixels[randomPixel + 3] = 255;
-        }
-   
         // order the date to be more readable
         let day = coronaStats.data[count].date.slice(8)
         let month = coronaStats.data[count].date.slice(5,7)
@@ -175,10 +169,11 @@ export const Main = () => {
         p5.fill('white')
         p5.textSize(20);
 
+        // stops synths  and enusres the final image is left on the screen
       } else {
         stopSynths();
       }
-
+      // move backwards through the data - begins at the last entry and moves forwards through time, finally ending on yesterdday's data (most recent stats)
       count--;
       img.updatePixels();
     };
