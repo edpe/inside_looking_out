@@ -157,6 +157,18 @@ export const Main = () => {
             synth.isPlaying = false;
           }
         });
+
+        // order the date to be more readable
+        let day = coronaStats.data[count].date.slice(8)
+        let month = coronaStats.data[count].date.slice(5,7)
+        let year = coronaStats.data[count].date.slice(0,4)
+        let date = day + "-" + month + "-" + year
+        
+        // updates with the date 
+        p5.text( date, isMobile ? p5.windowWidth - 120 : img.width - 120, isMobile ? p5.windowHeight - 20 : img.height - 20)
+        p5.fill('white')
+        p5.textSize(20);
+
         // stops synths  and enusres the final image is left on the screen
       } else {
         stopSynths();
