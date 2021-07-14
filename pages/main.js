@@ -129,6 +129,8 @@ export const Main = () => {
     p5.draw = () => {
       // show lines over image for cases
       if (count > 0) {
+        //console.log(coronaStats.data[count].date)
+
         p5.background(40);
 
         p5.image(img, 0, isMobile ? mobileImageOffset : 0);
@@ -163,6 +165,18 @@ export const Main = () => {
           img.pixels[randomPixel + 2] = 255;
           img.pixels[randomPixel + 3] = 255;
         }
+   
+        // order the date to be more readable
+        let day = coronaStats.data[count].date.slice(8)
+        let month = coronaStats.data[count].date.slice(5,7)
+        let year = coronaStats.data[count].date.slice(0,4)
+        let date = day + "-" + month + "-" + year
+        
+        // updates with the date 
+        p5.text( date, isMobile ? p5.windowWidth - 120 : img.width - 120, isMobile ? p5.windowHeight - 20 : img.height - 20)
+        p5.fill('white')
+        p5.textSize(20);
+        
       } else {
         stopSynths();
       }
