@@ -129,8 +129,6 @@ export const Main = () => {
     p5.draw = () => {
       // show lines over image for cases
       if (count > 0) {
-        //console.log(coronaStats.data[count].date)
-
         p5.background(40);
 
         p5.image(img, 0, isMobile ? mobileImageOffset : 0);
@@ -176,7 +174,7 @@ export const Main = () => {
         p5.text( date, isMobile ? p5.windowWidth - 120 : img.width - 120, isMobile ? p5.windowHeight - 20 : img.height - 20)
         p5.fill('white')
         p5.textSize(20);
-        
+
       } else {
         stopSynths();
       }
