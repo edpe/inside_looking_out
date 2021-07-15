@@ -9,11 +9,12 @@ export const Home = () => {
           <h1 className={styles.title}>Inside Looking Out</h1>
           <div className={styles.description}>
             <p>
-              Inside Looking Out uses live data from the UK Government COVID-19
-              API as a narrative structure. Each day of the Coronavirus pandemic
-              in the UK is represented by a single frame, creating an animated
-              film that tells a story about the impact of the virus on the
-              people of the UK.
+              Live data from the UK Government COVID-19 API is used as the
+              source to create a narrative structure for this audiovisual web
+              artwork. Each day of the Coronavirus pandemic in the UK is
+              represented by a single frame, creating an animated film that
+              tells a story about the impact of the virus on the people of the
+              UK.
             </p>
             <p>
               Each frame shows a photograph of a circular window, obscured by
@@ -23,14 +24,19 @@ export const Home = () => {
               representing cases and cumulative statistics from the previous
               day.
             </p>
-            <a
-              className={styles.inlineLink}
-              href="https://github.com/edpe/inside_looking_out"
-            >
+            <a href="https://github.com/edpe/inside_looking_out">
               Find out more and view the project on Github
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 500 500"
+                fill="white"
+              >
+                <path d="M0,0v512h512V0H0z M46.5,46.5h418.9v418.9H46.5V46.5z M186.2,116.4v46.5h129.5l-216,216l33.5,33.5l216-216v129.5h46.5 V116.4H186.2z" />
+              </svg>
             </a>
             <Link href="/main" passHref>
-              <a>PLAY</a>
+              <a className={styles.playButtonLink}>PLAY</a>
             </Link>
           </div>
         </div>
