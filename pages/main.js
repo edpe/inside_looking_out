@@ -60,11 +60,8 @@ export const Main = () => {
       )
     );
 
-    const stopSynths = () => {
-      synths.forEach((synth) => synth.triggerRelease());
-    };
     return () => {
-      stopSynths();
+      synths.forEach((synth) => synth.triggerRelease());
     };
   });
 
@@ -159,19 +156,23 @@ export const Main = () => {
         });
 
         // order the date to be more readable
-        let day = coronaStats.data[count].date.slice(8)
-        let month = coronaStats.data[count].date.slice(5,7)
-        let year = coronaStats.data[count].date.slice(0,4)
-        let date = day + "-" + month + "-" + year
-        
-        // updates with the date 
-        p5.text( date, isMobile ? p5.windowWidth - 120 : img.width - 120, isMobile ? p5.windowHeight - 20 : img.height - 20)
-        p5.fill('white')
+        let day = coronaStats.data[count].date.slice(8);
+        let month = coronaStats.data[count].date.slice(5, 7);
+        let year = coronaStats.data[count].date.slice(0, 4);
+        let date = day + "-" + month + "-" + year;
+
+        // updates with the date
+        p5.text(
+          date,
+          isMobile ? p5.windowWidth - 120 : img.width - 120,
+          isMobile ? p5.windowHeight - 20 : img.height - 20
+        );
+        p5.fill("white");
         p5.textSize(20);
 
-        // stops synths  and enusres the final image is left on the screen
+        // stops synths  and ensures the final image is left on the screen
       } else {
-        stopSynths();
+        synths.forEach((synth) => synth.triggerRelease());
       }
       // move backwards through the data - begins at the last entry and moves forwards through time, finally ending on yesterdday's data (most recent stats)
       count--;
