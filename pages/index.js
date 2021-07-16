@@ -192,6 +192,7 @@ export const Main = () => {
   }
 
   const handleClick = () => {
+    Tone.start();
     setUserInteractionComplete(true);
   };
 
