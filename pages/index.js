@@ -168,7 +168,7 @@ export const Main = () => {
         p5.text(
           date,
           isMobile ? p5.windowWidth - 120 : img.width - 120,
-          isMobile ? p5.windowHeight - 20 : img.height - 20
+          isMobile ? p5.windowHeight - 40 : img.height - 40
         );
         p5.fill("white");
         p5.textSize(20);
