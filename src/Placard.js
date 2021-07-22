@@ -34,7 +34,7 @@ const Placard = ({ onClick }) => {
                 <path d="M0,0v512h512V0H0z M46.5,46.5h418.9v418.9H46.5V46.5z M186.2,116.4v46.5h129.5l-216,216l33.5,33.5l216-216v129.5h46.5 V116.4H186.2z" />
               </svg>
             </a>
-            <button onClick={onClick} className="styles.playButtonLink">
+            <button onClick={onClick} className={styles.playButton}>
               PLAY
             </button>
           </div>
