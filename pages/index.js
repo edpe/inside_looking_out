@@ -101,6 +101,8 @@ export const Main = () => {
     let mobileImageOffset;
     let isMobile = p5.windowWidth <= 400;
     let count = coronaStats.data.length - 1;
+    let imageStartX;
+    let imageEndX;
 
     p5.preload = () => {
       img = p5.loadImage("/window.jpg");
@@ -111,27 +113,37 @@ export const Main = () => {
         p5.createCanvas(p5.windowWidth, p5.windowHeight);
         img.resize(p5.windowWidth, p5.windowWidth * (1000 / 750));
       } else {
-        p5.createCanvas(750, 1000);
-        img.resize(750, 1000);
+        p5.createCanvas(p5.windowWidth, p5.windowHeight);
+        img.resize(p5.windowHeight * (750 / 1000), p5.windowHeight);
       }
       img.loadPixels();
       p5.frameRate(10);
       mobileImageOffset = (p5.windowHeight - p5.windowWidth * (1000 / 750)) / 2;
+
+      imageStartX = p5.windowWidth / 2 - img.width / 2;
+      imageEndX = p5.windowWidth / 2 + img.width / 2;
     };
 
     p5.draw = () => {
-      // show lines over image for cases
       if (count > 0) {
-        p5.background(40);
+        p5.background(20);
 
-        p5.image(img, 0, isMobile ? mobileImageOffset : 0);
+        p5.image(
+          img,
+          isMobile ? 0 : imageStartX,
+          isMobile ? mobileImageOffset : 0
+        );
+        // show lines over image for cases
 
         for (
           let i = 0;
           i < coronaStats.data[count].dailyCases / (isMobile ? 40 : 10);
           i++
         ) {
-          let xPos = p5.random(img.width, 0);
+          let xPos = p5.random(
+            isMobile ? img.width : imageStartX,
+            isMobile ? 0 : imageEndX
+          );
           p5.line(xPos, 0, xPos, isMobile ? p5.windowHeight : img.height);
         }
 
@@ -167,8 +179,8 @@ export const Main = () => {
         // updates with the date
         p5.text(
           date,
-          isMobile ? p5.windowWidth - 120 : img.width - 120,
-          isMobile ? p5.windowHeight - 40 : img.height - 40
+          isMobile ? p5.windowWidth - 120 : imageEndX - 120,
+          isMobile ? p5.windowHeight - 40 : img.height - 20
         );
         p5.fill("white");
         p5.textSize(20);
