@@ -35,6 +35,13 @@ function MyApp({ Component, pageProps }) {
         <meta name="twitter:title" content={metaData.name} />
         <meta name="twitter:description" content={metaData.description} />
         <meta name="twitter:image" content={metaData.image}></meta>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;400;600&display=swap"
+          rel="stylesheet"
+        />
       </Head>
       <Component {...pageProps} />
     </>

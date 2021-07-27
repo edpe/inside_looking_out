@@ -26,6 +26,8 @@
   flex-direction: column;
   justify-content: center;
   max-width: 800px;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 400;
 }
 
 .title_dark {
@@ -33,7 +35,7 @@
   margin: 0;
   line-height: 1.5;
   font-size: 1.5rem;
-  font-weight: 400;
+  font-weight: 500;
 }
 
 .title_light {
@@ -41,7 +43,7 @@
   margin: 0;
   line-height: 1.5;
   font-size: 1.5rem;
-  font-weight: 400;
+  font-weight: 500;
 }
 
 @media (min-width: 400px) {
@@ -88,16 +90,16 @@
 }
 
 .description_dark a svg {
-  margin-left: 5px;
-  height: 20px;
-  width: 20px;
+  margin-left: 10px;
+  height: 15px;
+  width: 15px;
   color: white;
 }
 
 .description_light a svg {
-  margin-left: 5px;
-  height: 20px;
-  width: 20px;
+  margin-left: 10px;
+  height: 15px;
+  width: 15px;
   color: black;
 }
 
@@ -122,6 +124,9 @@
   text-align: center;
   transition: 0.2s;
   font-size: 1.5rem;
+  font-family: 'Poppins', sans-serif;
+
+
 }
 
 .playButton_light {
@@ -135,12 +140,16 @@
   text-align: center;
   transition: 0.2s;
   font-size: 1.5rem;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 500;
 }
 
 @media (min-width: 400px) {
   .playButton_light, .playButton_dark {
     width: 100px;
     font-size: 1rem;
+    font-weight: 500;
+
   }
 }
 
