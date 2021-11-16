@@ -33,23 +33,58 @@ export const Main = () => {
   const [userInteractionComplete, setUserInteractionComplete] = useState(false);
 
   // tone setup synths and effects
-  const synthState = [
-    { voice: "sine", triggerAmount: 0, note: "C2", isPlaying: true },
-    { voice: "triangle", triggerAmount: 1000, note: "Eb2", isPlaying: false },
-    { voice: "triangle", triggerAmount: 5000, note: "G3", isPlaying: false },
-    { voice: "triangle", triggerAmount: 18000, note: "Bb2", isPlaying: false },
-    { voice: "sine", triggerAmount: 22000, note: "C6", isPlaying: false },
+  const synthStates = [
+    {
+      voice: "sine",
+      triggerAmount: 0,
+      notes: ["C4", ["E4", "D4", "E4"], "G4", ["A4", "G4"]],
+      isPlaying: true,
+      synth: {},
+      sequence: {},
+    },
+    {
+      voice: "triangle",
+      triggerAmount: 1000,
+      notes: ["C4", ["E4", "D4", "E4"], "G4", ["A4", "G4"]],
+      isPlaying: false,
+      synth: {},
+      sequence: {},
+    },
+    {
+      voice: "triangle",
+      triggerAmount: 5000,
+      notes: ["C4", ["E4", "D4", "E4"], "G4", ["A4", "G4"]],
+      isPlaying: false,
+      synth: {},
+      sequence: {},
+    },
+    {
+      voice: "triangle",
+      triggerAmount: 18000,
+      notes: ["C4", ["E4", "D4", "E4"], "G4", ["A4", "G4"]],
+      isPlaying: false,
+      synth: {},
+      sequence: {},
+    },
+    {
+      voice: "sine",
+      triggerAmount: 22000,
+      notes: ["C4", ["E4", "D4", "E4"], "G4", ["A4", "G4"]],
+      isPlaying: false,
+      synth: {},
+      sequence: {},
+    },
   ];
 
-  const synths = [];
+  let synths = [];
 
   useEffect(() => {
     const reverb = new Tone.Reverb(3);
     const distortion = new Tone.Distortion(0.5);
 
-    synthState.forEach((synthState) =>
-      synths.push(
-        new Tone.Synth({
+    synthStates.forEach(
+      (synthState) =>
+        (synthState.synth = new Tone.Synth({
           oscillator: {
             type: synthState.voice,
           },
@@ -59,12 +94,18 @@ export const Main = () => {
             sustain: 0.3,
             release: 2,
           },
-        }).chain(distortion, reverb, Tone.Destination)
-      )
+        }).chain(distortion, reverb, Tone.Destination))
+    );
+
+    synthStates.forEach(
+      (synthState) =>
+        (synthState.sequence = new Tone.Sequence((time, note) => {
+          synth.triggerAttackRelease(note, 0.1, time);
+        }, synthState.notes))
     );
 
     return () => {
-      synths.forEach((synth) => synth.triggerRelease());
+      synthStates.forEach((synthState) => synthState.synth.triggerRelease());
     };
   });
 
