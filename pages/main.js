@@ -104,7 +104,7 @@ export const Main = () => {
     let img;
     let count = coronaStats.data.length - 1;
 
-    const isMobile = p5.windowWidth <= 400;
+    const isMobile = p5.windowWidth <= 600;
     let mobileImageOffset;
 
     p5.preload = () => {
