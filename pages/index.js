@@ -99,7 +99,7 @@ export const Main = () => {
   const sketch = (p5) => {
     let img;
     let mobileImageOffset;
-    let isMobile = p5.windowWidth <= 400;
+    let isMobile = p5.windowWidth <= 700;
     let count = coronaStats.data.length - 1;
     let imageStartX;
     let imageEndX;
