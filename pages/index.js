@@ -33,23 +33,58 @@ export const Main = () => {
   const [userInteractionComplete, setUserInteractionComplete] = useState(false);
 
   // tone setup synths and effects
-  const synthState = [
-    { voice: "sine", triggerAmount: 0, note: "C2", isPlaying: true },
-    { voice: "triangle", triggerAmount: 1000, note: "Eb2", isPlaying: false },
-    { voice: "triangle", triggerAmount: 5000, note: "G3", isPlaying: false },
-    { voice: "triangle", triggerAmount: 18000, note: "Bb2", isPlaying: false },
-    { voice: "sine", triggerAmount: 22000, note: "C6", isPlaying: false },
+  const synthStates = [
+    {
+      voice: "sine",
+      triggerAmount: 0,
+      notes: ["A2"],
+      isPlaying: true,
+      synth: {},
+      sequence: {},
+    },
+    {
+      voice: "triangle",
+      triggerAmount: 1000,
+      notes: ["A3", "B3", "C4", "D4"],
+      isPlaying: false,
+      synth: {},
+      sequence: {},
+    },
+    {
+      voice: "triangle",
+      triggerAmount: 5000,
+      notes: ["A4", "B4", "C5", "D5"],
+      isPlaying: false,
+      synth: {},
+      sequence: {},
+    },
+    {
+      voice: "triangle",
+      triggerAmount: 18000,
+      notes: ["B5", "C6", "A5", "C6"],
+      isPlaying: false,
+      synth: {},
+      sequence: {},
+    },
+    {
+      voice: "sine",
+      triggerAmount: 22000,
+      notes: ["A6", "B6", "C7", "D7"],
+      isPlaying: false,
+      synth: {},
+      sequence: {},
+    },
   ];
 
-  const synths = [];
+  let synths = [];
 
   useEffect(() => {
     const reverb = new Tone.Reverb(3);
-    const distortion = new Tone.Distortion(0.5);
+    const distortion = new Tone.Distortion(0.1);
 
-    synthState.forEach((synthState) =>
-      synths.push(
-        new Tone.Synth({
+    synthStates.forEach(
+      (synthState) =>
+        (synthState.synth = new Tone.Synth({
           oscillator: {
             type: synthState.voice,
           },
@@ -59,12 +94,18 @@ export const Main = () => {
             sustain: 0.3,
             release: 2,
           },
-        }).chain(distortion, reverb, Tone.Destination)
-      )
+        }).chain(distortion, reverb, Tone.Destination))
+    );
+
+    synthStates.forEach(
+      (synthState) =>
+        (synthState.sequence = new Tone.Sequence((time, note) => {
+          synthState.synth.triggerAttackRelease(note, 0.1, time);
+        }, synthState.notes))
     );
 
     return () => {
-      synths.forEach((synth) => synth.triggerRelease());
+      synthStates.forEach((synthState) => synthState.synth.triggerRelease());
     };
   });
 
@@ -107,7 +148,8 @@ export const Main = () => {
     p5.preload = () => {
       img = p5.loadImage("/window.jpg");
     };
-
+    Tone.Transport.start();
+    // synthStates[0].sequence.start(0);
     p5.setup = () => {
       if (isMobile) {
         p5.createCanvas(p5.windowWidth, p5.windowHeight);
@@ -158,15 +200,15 @@ export const Main = () => {
         }
 
         // starts synth playing when cases reach the specified trigger level
-        synthState.forEach((synth, index) => {
-          if (coronaStats.data[count].dailyCases > synth.triggerAmount) {
-            if (!synth.isPlaying) {
-              synths[index].triggerAttack(synth.note);
-              synth.isPlaying = true;
+        synthStates.forEach((synthState) => {
+          if (coronaStats.data[count].dailyCases > synthState.triggerAmount) {
+            if (!synthState.isPlaying) {
+              synthState.sequence.start(0);
+              synthState.isPlaying = true;
             }
           } else {
-            synths[index].triggerRelease();
-            synth.isPlaying = false;
+            synthState.sequence.stop(0);
+            synthState.isPlaying = false;
           }
         });
 
@@ -187,7 +229,7 @@ export const Main = () => {
 
         // stops synths  and ensures the final image is left on the screen
       } else {
-        synths.forEach((synth) => synth.triggerRelease());
+        synthStates.forEach((synthState) => synthState.sequence.stop());
       }
       // move backwards through the data - begins at the last entry and moves forwards through time, finally ending on yesterdday's data (most recent stats)
       count--;
