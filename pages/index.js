@@ -35,10 +35,13 @@ export const Main = () => {
   // tone setup synths and effects
   const synthState = [
     { voice: "sine", triggerAmount: 0, note: "C2", isPlaying: true },
-    { voice: "triangle", triggerAmount: 1000, note: "Eb2", isPlaying: false },
-    { voice: "triangle", triggerAmount: 5000, note: "G3", isPlaying: false },
-    { voice: "triangle", triggerAmount: 18000, note: "Bb2", isPlaying: false },
-    { voice: "sine", triggerAmount: 22000, note: "C6", isPlaying: false },
+    { voice: "triangle", triggerAmount: 3000, note: "Eb2", isPlaying: false },
+    { voice: "sine", triggerAmount: 5000, note: "C3", isPlaying: false },
+    { voice: "triangle", triggerAmount: 10000, note: "G3", isPlaying: false },
+    { voice: "sine", triggerAmount: 30000, note: "G4", isPlaying: false },
+    { voice: "triangle", triggerAmount: 50000, note: "Bb2", isPlaying: false },
+    { voice: "triangle", triggerAmount: 60000, note: "Bb5", isPlaying: false },
+    { voice: "sine", triggerAmount: 80000, note: "C6", isPlaying: false },
   ];
 
   const synths = [];
@@ -124,6 +127,8 @@ export const Main = () => {
       imageEndX = p5.windowWidth / 2 + img.width / 2;
     };
 
+    console.log(coronaStats)
+
     p5.draw = () => {
       if (count > 0) {
         p5.background(20);
@@ -137,7 +142,7 @@ export const Main = () => {
 
         for (
           let i = 0;
-          i < coronaStats.data[count].dailyCases / (isMobile ? 40 : 10);
+          i < coronaStats.data[count].dailyCases / (isMobile ? 60 : 20);
           i++
         ) {
           let xPos = p5.random(
