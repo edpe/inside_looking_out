@@ -1,6 +1,6 @@
 import axios from "axios";
 import dynamic from "next/dynamic";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import * as Tone from "tone";
 import Placard from "../src/Placard";
 
@@ -8,104 +8,110 @@ import styles from "../styles/Main.module.css";
 
 const P5comp = dynamic(() => import("react-p5-wrapper"), { ssr: false });
 
-const AreaType = "overview";
+const CASES_ENDPOINT =
+  "https://api.ukhsa-dashboard.data.gov.uk/themes/infectious_disease/sub_themes/respiratory/topics/COVID-19/geography_types/Nation/geographies/England/metrics/COVID-19_cases_casesByDay?page_size=365";
 
-const AreaName = "united kingdom";
+const DEATHS_ENDPOINT =
+  "https://api.ukhsa-dashboard.data.gov.uk/themes/infectious_disease/sub_themes/respiratory/topics/COVID-19/geography_types/Nation/geographies/England/metrics/COVID-19_deaths_ONSByDay?page_size=365";
 
-const filters = [`areaType=${AreaType}`, `areaName=${AreaName}`];
+const synthConfig = [
+  { voice: "sine", triggerAmount: 0, note: "C2", isPlaying: true },
+  { voice: "triangle", triggerAmount: 3000, note: "Eb2", isPlaying: false },
+  { voice: "sine", triggerAmount: 5000, note: "C3", isPlaying: false },
+  { voice: "triangle", triggerAmount: 10000, note: "G3", isPlaying: false },
+  { voice: "sine", triggerAmount: 30000, note: "G4", isPlaying: false },
+  { voice: "triangle", triggerAmount: 50000, note: "Bb2", isPlaying: false },
+  { voice: "triangle", triggerAmount: 60000, note: "Bb5", isPlaying: false },
+  { voice: "sine", triggerAmount: 80000, note: "C6", isPlaying: false },
+];
 
-const structure = {
-  date: "date",
-  name: "areaName",
-  code: "areaCode",
-  dailyCases: "newCasesByPublishDate",
-  dailyDeaths: "newDeaths28DaysByPublishDate",
+const getMetricResults = async (endpoint) => {
+  const results = [];
+  let nextPage = endpoint;
+
+  while (nextPage) {
+    const { data, status, statusText } = await axios.get(nextPage, {
+      timeout: 10000,
+    });
+
+    if (status >= 400) {
+      throw new Error(statusText);
+    }
+
+    results.push(...data.results);
+    nextPage = data.next;
+  }
+
+  return results;
 };
 
-const apiParams = {
-  filters: filters.join(";"),
-  structure: JSON.stringify(structure),
+const buildCoronaStats = async () => {
+  const [caseResults, deathResults] = await Promise.all([
+    getMetricResults(CASES_ENDPOINT),
+    getMetricResults(DEATHS_ENDPOINT),
+  ]);
+
+  const deathsByDate = new Map(
+    deathResults.map((entry) => [entry.date, Math.round(entry.metric_value || 0)])
+  );
+
+  return {
+    data: caseResults.map((entry) => ({
+      date: entry.date,
+      name: entry.geography,
+      code: entry.geography_code,
+      dailyCases: Math.round(entry.metric_value || 0),
+      dailyDeaths: deathsByDate.get(entry.date) || 0,
+    })),
+  };
 };
 
 export const Main = () => {
   const [coronaStats, setCoronaStats] = useState(null);
+  const [dataError, setDataError] = useState(null);
   const [userInteractionComplete, setUserInteractionComplete] = useState(false);
-
-  // tone setup synths and effects
-  const synthState = [
-    { voice: "sine", triggerAmount: 0, note: "C2", isPlaying: true },
-    { voice: "triangle", triggerAmount: 3000, note: "Eb2", isPlaying: false },
-    { voice: "sine", triggerAmount: 5000, note: "C3", isPlaying: false },
-    { voice: "triangle", triggerAmount: 10000, note: "G3", isPlaying: false },
-    { voice: "sine", triggerAmount: 30000, note: "G4", isPlaying: false },
-    { voice: "triangle", triggerAmount: 50000, note: "Bb2", isPlaying: false },
-    { voice: "triangle", triggerAmount: 60000, note: "Bb5", isPlaying: false },
-    { voice: "sine", triggerAmount: 80000, note: "C6", isPlaying: false },
-  ];
-
-  const synths = [];
+  const synthStateRef = useRef(
+    synthConfig.map((config) => ({ ...config }))
+  );
+  const synthsRef = useRef([]);
 
   useEffect(() => {
-    const reverb = new Tone.Reverb(3);
-    const distortion = new Tone.Distortion(0.5);
-
-    synthState.forEach((synthState) =>
-      synths.push(
-        new Tone.Synth({
-          oscillator: {
-            type: synthState.voice,
-          },
-          envelope: {
-            attack: 2,
-            decay: 0.1,
-            sustain: 0.3,
-            release: 2,
-          },
-        }).chain(distortion, reverb, Tone.Destination)
-      )
-    );
-
     return () => {
-      synths.forEach((synth) => synth.triggerRelease());
+      synthsRef.current.forEach((synth) => {
+        synth.triggerRelease();
+        synth.dispose();
+      });
     };
-  });
-
-  const getData = async (queries) => {
-    const endpoint = "https://api.coronavirus.data.gov.uk/v1/data";
-
-    const { data, status, statusText } = await axios.get(endpoint, {
-      params: queries,
-      timeout: 10000,
-    });
-
-    if (status >= 400) throw new Error(statusText);
-    return setCoronaStats(data);
-  };
-
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const playAudio = () => {
-        const audio = document.getElementById("audio");
-
-        if (audio) {
-          audio.play();
-        }
-
-        document.removeEventListener("click", playAudio);
-      };
-
-      // play audio on user interaction, due to Chrome policy not allowing autoplay
-      document.addEventListener("click", playAudio);
-
-      return () => {
-        document.removeEventListener("click", playAudio);
-      };
-    }
   }, []);
 
   useEffect(() => {
-    getData(apiParams);
-  }, [apiParams]);
+    let isCancelled = false;
+
+    const getData = async () => {
+      try {
+        const liveStats = await buildCoronaStats();
+
+        if (!isCancelled) {
+          setCoronaStats(liveStats);
+          setDataError(null);
+        }
+      } catch (error) {
+        console.error(error);
+
+        if (!isCancelled) {
+          setDataError(
+            "Live UKHSA COVID-19 data is currently unavailable."
+          );
+        }
+      }
+    };
+
+    getData();
+
+    return () => {
+      isCancelled = true;
+    };
+  }, []);
 
   const sketch = (p5) => {
     let img;
@@ -134,8 +140,6 @@ export const Main = () => {
       imageStartX = p5.windowWidth / 2 - img.width / 2;
       imageEndX = p5.windowWidth / 2 + img.width / 2;
     };
-
-    console.log(coronaStats)
 
     p5.draw = () => {
       if (count > 0) {
@@ -171,14 +175,14 @@ export const Main = () => {
         }
 
         // starts synth playing when cases reach the specified trigger level
-        synthState.forEach((synth, index) => {
+        synthStateRef.current.forEach((synth, index) => {
           if (coronaStats.data[count].dailyCases > synth.triggerAmount) {
             if (!synth.isPlaying) {
-              synths[index].triggerAttack(synth.note);
+              synthsRef.current[index].triggerAttack(synth.note);
               synth.isPlaying = true;
             }
           } else {
-            synths[index].triggerRelease();
+            synthsRef.current[index].triggerRelease();
             synth.isPlaying = false;
           }
         });
@@ -200,7 +204,7 @@ export const Main = () => {
 
         // stops synths  and ensures the final image is left on the screen
       } else {
-        synths.forEach((synth) => synth.triggerRelease());
+        synthsRef.current.forEach((synth) => synth.triggerRelease());
       }
       // move backwards through the data - begins at the last entry and moves forwards through time, finally ending on yesterdday's data (most recent stats)
       count--;
@@ -208,16 +212,45 @@ export const Main = () => {
     };
   };
 
-  if (!coronaStats) {
+  if (dataError) {
     return (
       <div className={styles.container}>
-        <p className={styles.text}>Loading data</p>
+        <p className={styles.text}>{dataError}</p>
       </div>
     );
   }
 
-  const handleClick = () => {
-    Tone.start();
+  if (!coronaStats) {
+    return (
+      <div className={styles.container}>
+        <p className={styles.text}>Loading latest UKHSA data</p>
+      </div>
+    );
+  }
+
+  const handleClick = async () => {
+    await Tone.start();
+
+    if (synthsRef.current.length === 0) {
+      const reverb = new Tone.Reverb(3);
+      const distortion = new Tone.Distortion(0.5);
+
+      synthStateRef.current = synthConfig.map((config) => ({ ...config }));
+      synthsRef.current = synthStateRef.current.map((synthState) =>
+        new Tone.Synth({
+          oscillator: {
+            type: synthState.voice,
+          },
+          envelope: {
+            attack: 2,
+            decay: 0.1,
+            sustain: 0.3,
+            release: 2,
+          },
+        }).chain(distortion, reverb, Tone.Destination)
+      );
+    }
+
     setUserInteractionComplete(true);
   };
 
@@ -231,11 +264,11 @@ export const Main = () => {
         darkMode
       >
         <p>
-          Live data from the UK Government COVID-19 API is used as the source to
+          Live data from the UKHSA COVID-19 API is used as the source to
           create a narrative structure for this audiovisual web artwork. Each
-          day of the Coronavirus pandemic in the UK is represented by a single
+          day of the Coronavirus pandemic in England is represented by a single
           frame, creating an animated film that tells a story about the impact
-          of the virus on the people of the UK.
+          of the virus on the people of England.
         </p>
         <p>
           Each frame shows a photograph of a circular window, obscured by
