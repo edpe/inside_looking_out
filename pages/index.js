@@ -11,12 +11,6 @@ const P5comp = dynamic(
   { ssr: false }
 );
 
-const CASES_ENDPOINT =
-  "https://api.ukhsa-dashboard.data.gov.uk/themes/infectious_disease/sub_themes/respiratory/topics/COVID-19/geography_types/Nation/geographies/England/metrics/COVID-19_cases_casesByDay?page_size=365";
-
-const DEATHS_ENDPOINT =
-  "https://api.ukhsa-dashboard.data.gov.uk/themes/infectious_disease/sub_themes/respiratory/topics/COVID-19/geography_types/Nation/geographies/England/metrics/COVID-19_deaths_ONSByDay?page_size=365";
-
 const synthConfig = [
   { voice: "sine", triggerAmount: 0, note: "C2", isPlaying: true },
   { voice: "triangle", triggerAmount: 3000, note: "Eb2", isPlaying: false },
@@ -27,47 +21,6 @@ const synthConfig = [
   { voice: "triangle", triggerAmount: 60000, note: "Bb5", isPlaying: false },
   { voice: "sine", triggerAmount: 80000, note: "C6", isPlaying: false },
 ];
-
-const getMetricResults = async (endpoint) => {
-  const results = [];
-  let nextPage = endpoint;
-
-  while (nextPage) {
-    const { data, status, statusText } = await axios.get(nextPage, {
-      timeout: 10000,
-    });
-
-    if (status >= 400) {
-      throw new Error(statusText);
-    }
-
-    results.push(...data.results);
-    nextPage = data.next;
-  }
-
-  return results;
-};
-
-const buildCoronaStats = async () => {
-  const [caseResults, deathResults] = await Promise.all([
-    getMetricResults(CASES_ENDPOINT),
-    getMetricResults(DEATHS_ENDPOINT),
-  ]);
-
-  const deathsByDate = new Map(
-    deathResults.map((entry) => [entry.date, Math.round(entry.metric_value || 0)])
-  );
-
-  return {
-    data: caseResults.map((entry) => ({
-      date: entry.date,
-      name: entry.geography,
-      code: entry.geography_code,
-      dailyCases: Math.round(entry.metric_value || 0),
-      dailyDeaths: deathsByDate.get(entry.date) || 0,
-    })),
-  };
-};
 
 export const Main = () => {
   const [coronaStats, setCoronaStats] = useState(null);
@@ -92,7 +45,9 @@ export const Main = () => {
 
     const getData = async () => {
       try {
-        const liveStats = await buildCoronaStats();
+        const { data: liveStats } = await axios.get("/api/covid", {
+          timeout: 20000,
+        });
 
         if (!isCancelled) {
           setCoronaStats(liveStats);
