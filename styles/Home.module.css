@@ -1,0 +1,101 @@
+.container {
+  min-height: 100vh;
+  background: #060606;
+  color: white;
+  padding: 2rem 1rem 3rem;
+}
+
+.main {
+  width: 100%;
+  max-width: 980px;
+  margin: 0 auto;
+}
+
+.header {
+  margin-bottom: 2rem;
+}
+
+.eyebrow {
+  margin: 0 0 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: #9b9b9b;
+  font-size: 0.72rem;
+}
+
+.title {
+  margin: 0;
+  font-size: clamp(2rem, 8vw, 4rem);
+  line-height: 0.95;
+  font-weight: 600;
+}
+
+.intro {
+  max-width: 44rem;
+  color: #d0d0d0;
+  line-height: 1.6;
+  margin: 1rem 0 0;
+}
+
+.grid {
+  display: grid;
+  gap: 1rem;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 18rem;
+  padding: 1.25rem;
+  border: 1px solid #2a2a2a;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.05),
+    rgba(255, 255, 255, 0.02)
+  );
+}
+
+.cardTitle {
+  margin: 0 0 0.75rem;
+  font-size: 1.5rem;
+  font-weight: 500;
+}
+
+.cardCopy {
+  margin: 0;
+  color: #d0d0d0;
+  line-height: 1.6;
+}
+
+.cardFooter {
+  margin-top: 1.5rem;
+}
+
+.link {
+  display: inline-block;
+  padding: 0.85rem 1.1rem;
+  border: 1px solid white;
+  transition: 0.2s;
+}
+
+.link:hover,
+.link:focus {
+  background: white;
+  color: black;
+}
+
+@media (min-width: 760px) {
+  .container {
+    padding: 3rem 2rem 4rem;
+  }
+
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .card {
+    min-height: 22rem;
+    padding: 1.5rem;
+  }
+}
