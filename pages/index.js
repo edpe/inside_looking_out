@@ -1,7 +1,6 @@
 import axios from "axios";
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
-import { render } from "react-dom";
 import * as Tone from "tone";
 import Placard from "../src/Placard";
 
@@ -85,15 +84,24 @@ export const Main = () => {
 
   useEffect(() => {
     if (typeof window !== "undefined") {
+      const playAudio = () => {
+        const audio = document.getElementById("audio");
+
+        if (audio) {
+          audio.play();
+        }
+
+        document.removeEventListener("click", playAudio);
+      };
+
       // play audio on user interaction, due to Chrome policy not allowing autoplay
       document.addEventListener("click", playAudio);
 
-      const playAudio = () => {
-        document.getElementById("audio").play();
+      return () => {
         document.removeEventListener("click", playAudio);
       };
     }
-  });
+  }, []);
 
   useEffect(() => {
     getData(apiParams);
