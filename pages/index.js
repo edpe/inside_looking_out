@@ -6,7 +6,10 @@ import Placard from "../src/Placard";
 
 import styles from "../styles/Main.module.css";
 
-const P5comp = dynamic(() => import("react-p5-wrapper"), { ssr: false });
+const P5comp = dynamic(
+  () => import("react-p5-wrapper").then((module) => module.ReactP5Wrapper),
+  { ssr: false }
+);
 
 const CASES_ENDPOINT =
   "https://api.ukhsa-dashboard.data.gov.uk/themes/infectious_disease/sub_themes/respiratory/topics/COVID-19/geography_types/Nation/geographies/England/metrics/COVID-19_cases_casesByDay?page_size=365";
@@ -117,7 +120,7 @@ export const Main = () => {
     let img;
     let mobileImageOffset;
     let isMobile = p5.windowWidth <= 700;
-    let count = coronaStats.data.length - 1;
+    let count = 0;
     let imageStartX;
     let imageEndX;
 
@@ -142,7 +145,7 @@ export const Main = () => {
     };
 
     p5.draw = () => {
-      if (count > 0) {
+      if (count < coronaStats.data.length) {
         p5.background(20);
 
         p5.image(
@@ -206,8 +209,8 @@ export const Main = () => {
       } else {
         synthsRef.current.forEach((synth) => synth.triggerRelease());
       }
-      // move backwards through the data - begins at the last entry and moves forwards through time, finally ending on yesterdday's data (most recent stats)
-      count--;
+      // move forwards through the data, beginning with the earliest entry and ending on the most recent stats
+      count++;
       img.updatePixels();
     };
   };
